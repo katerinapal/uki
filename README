@@ -1,0 +1,20 @@
+Uki by Charles Childers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a framework for building applications using Retro (a Forth)
+and JavaScript.
+
+Design Notes:
+
+  - Object-oriented JavaScript
+  - Each Uki has its own:
+    - Stacks
+    - Input & Output buffers
+    - Registers
+  - Each Uki shares a single Retro image
+
+Please be aware that I'm developing this for my own personal use. It
+is rather poorly commented and documented and is in a state of flux.
+Use it at your own risk.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Uki is gifted to the public domain. Share freely.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

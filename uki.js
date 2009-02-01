@@ -7,12 +7,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Global Limits
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
   const IMAGE_SIZE  = 5000000
   const STACK_DEPTH =     100
   const CYCLES_PER  =     100
+
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,9 +34,29 @@
 
 
 
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ The core Uki object
+
+ Call uki_start() *before* using Uki objects.
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Variables:
+    ip                        Instuction pointer
+    sp                        Data stack pointer
+    rsp                       Return stack pointer
+    tib                       Text input buffer
+    tob                       Text output buffer
+    data                      Data stack (array)
+    address                   Return stack (array)
+    ports                     I/O ports (array)
+    run                       Internal flag
+
+ Functions:
+    eval(string)              Evaluate a string
+    opcode()                  Process a single opcode
+    io()                      Handle I/O devices
+    getHeapPointer()          Get the heap pointer
+    getDictPointer()          Get the dictionary pointer
+    getStrTablePointer()      Get the pointer to the string table
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 function uki()
 {
@@ -109,151 +131,151 @@ function uki()
     op = image[this.ip];
     switch(op)
     {
-    case VM_NOP:
-      break;
-    case VM_LIT:
-      this.sp++; this.ip++; this.data[this.sp] = image[this.ip];
-      break;
-    case VM_DUP:
-      this.sp++; this.data[this.sp] = this.data[this.sp-1];
-      break;
-    case VM_DROP:
-      this.data[this.sp] = 0; this.sp--;
-      break;
-    case VM_SWAP:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.data[this.sp] = y;
-      this.data[this.sp-1] = x;
-      break;
-    case VM_PUSH:
-      this.rsp++;
-      this.address[this.rsp] = this.data[this.sp];
-      this.sp--;
-      break;
-    case VM_POP:
-      this.sp++;
-      this.data[this.sp] = this.address[this.rsp];
-      this.rsp--;
-      break;
-    case VM_CALL:
-      this.ip++; this.rsp++;
-      this.address[this.rsp] = this.ip++;
-      this.ip = image[this.ip-1] - 1;
-      break;
-    case VM_JUMP:
-      this.ip++;
-      this.ip = image[this.ip] - 1;
-      break;
-    case VM_RETURN:
-      this.ip = this.address[this.rsp]; this.rsp--;
-      break;
-    case VM_GT_JUMP:
-      this.ip++
-      if (this.data[this.sp-1] > this.data[this.sp])
-        this.ip = image[this.ip] - 1;
-      this.sp = this.sp - 2;
-      break;
-    case VM_LT_JUMP:
-      this.ip++
-      if (this.data[this.sp-1] < this.data[this.sp])
-        this.ip = image[this.ip] - 1;
-      this.sp = this.sp - 2;
-      break;
-    case VM_NE_JUMP:
-      this.ip++
-      if (this.data[this.sp-1] != this.data[this.sp])
-        this.ip = image[this.ip] - 1;
-      this.sp = this.sp - 2;
-      break;
-    case VM_EQ_JUMP:
-      this.ip++
-      if (this.data[this.sp-1] == this.data[this.sp])
-        this.ip = image[this.ip] - 1;
-      this.sp = this.sp - 2;
-      break;
-    case VM_FETCH:
-      x = this.data[this.sp];
-      this.data[this.sp] = image[x];
-      break;
-    case VM_STORE:
-      image[this.data[this.sp]] = this.data[this.sp-1];
-      this.sp = this.sp - 2;
-      break;
-    case VM_ADD:
-      this.data[this.sp-1] += this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
-      break;
-    case VM_SUB:
-      this.data[this.sp-1] -= this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
-      break;
-    case VM_MUL:
-      this.data[this.sp-1] *= this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
-      break;
-    case VM_DIVMOD:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.data[this.sp] = Math.floor(y / x);
-      this.data[this.sp-1] = y % x;
-      break;
-    case VM_AND:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.sp--;
-      this.data[this.sp] = x & y;
-      break;
-    case VM_OR:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.sp--;
-      this.data[this.sp] = x | y;
-      break;
-    case VM_XOR:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.sp--;
-      this.data[this.sp] = x ^ y;
-      break;
-    case VM_SHL:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.sp--;
-      this.data[this.sp] = y << x;
-      break;
-    case VM_SHR:
-      x = this.data[this.sp];
-      y = this.data[this.sp-1];
-      this.sp--;
-      this.data[this.sp] = y >>= x;
-      break;
-    case VM_ZERO_EXIT:
-      if (this.data[this.sp] == 0)
-      {
+      case VM_NOP:
+        break;
+      case VM_LIT:
+        this.sp++; this.ip++; this.data[this.sp] = image[this.ip];
+        break;
+      case VM_DUP:
+        this.sp++; this.data[this.sp] = this.data[this.sp-1];
+        break;
+      case VM_DROP:
+        this.data[this.sp] = 0; this.sp--;
+        break;
+      case VM_SWAP:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.data[this.sp] = y;
+        this.data[this.sp-1] = x;
+        break;
+      case VM_PUSH:
+        this.rsp++;
+        this.address[this.rsp] = this.data[this.sp];
         this.sp--;
+        break;
+      case VM_POP:
+        this.sp++;
+        this.data[this.sp] = this.address[this.rsp];
+        this.rsp--;
+        break;
+      case VM_CALL:
+        this.ip++; this.rsp++;
+        this.address[this.rsp] = this.ip++;
+        this.ip = image[this.ip-1] - 1;
+        break;
+      case VM_JUMP:
+        this.ip++;
+        this.ip = image[this.ip] - 1;
+        break;
+      case VM_RETURN:
         this.ip = this.address[this.rsp]; this.rsp--;
-      }
+        break;
+      case VM_GT_JUMP:
+        this.ip++
+        if (this.data[this.sp-1] > this.data[this.sp])
+          this.ip = image[this.ip] - 1;
+        this.sp = this.sp - 2;
       break;
-    case VM_INC:
-      this.data[this.sp]++;
-      break;
-    case VM_DEC:
-      this.data[this.sp]--;
-      break;
-    case VM_IN:
-      x = this.data[this.sp];
-      this.data[this.sp] = this.ports[x];
-      this.ports[x] = 0;
-      break;
-    case VM_OUT:
-      this.ports[0] = 0;
-      this.ports[this.data[this.sp]] = this.data[this.sp-1];
-      this.sp = this.sp - 2;
-      break;
-    case VM_WAIT:
-      this.io();
-      break;
-    default:
-      this.ip = IMAGE_SIZE;
-  }
+      case VM_LT_JUMP:
+        this.ip++
+        if (this.data[this.sp-1] < this.data[this.sp])
+          this.ip = image[this.ip] - 1;
+        this.sp = this.sp - 2;
+        break;
+      case VM_NE_JUMP:
+        this.ip++
+        if (this.data[this.sp-1] != this.data[this.sp])
+          this.ip = image[this.ip] - 1;
+        this.sp = this.sp - 2;
+        break;
+      case VM_EQ_JUMP:
+        this.ip++
+        if (this.data[this.sp-1] == this.data[this.sp])
+          this.ip = image[this.ip] - 1;
+        this.sp = this.sp - 2;
+        break;
+      case VM_FETCH:
+        x = this.data[this.sp];
+        this.data[this.sp] = image[x];
+        break;
+      case VM_STORE:
+        image[this.data[this.sp]] = this.data[this.sp-1];
+        this.sp = this.sp - 2;
+        break;
+      case VM_ADD:
+        this.data[this.sp-1] += this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
+        break;
+      case VM_SUB:
+        this.data[this.sp-1] -= this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
+        break;
+      case VM_MUL:
+        this.data[this.sp-1] *= this.data[this.sp]; this.data[this.sp] = 0; this.sp--;
+        break;
+      case VM_DIVMOD:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.data[this.sp] = Math.floor(y / x);
+        this.data[this.sp-1] = y % x;
+        break;
+      case VM_AND:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.sp--;
+        this.data[this.sp] = x & y;
+        break;
+      case VM_OR:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.sp--;
+        this.data[this.sp] = x | y;
+        break;
+      case VM_XOR:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.sp--;
+        this.data[this.sp] = x ^ y;
+        break;
+      case VM_SHL:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.sp--;
+        this.data[this.sp] = y << x;
+        break;
+      case VM_SHR:
+        x = this.data[this.sp];
+        y = this.data[this.sp-1];
+        this.sp--;
+        this.data[this.sp] = y >>= x;
+        break;
+      case VM_ZERO_EXIT:
+        if (this.data[this.sp] == 0)
+        {
+          this.sp--;
+          this.ip = this.address[this.rsp]; this.rsp--;
+        }
+        break;
+      case VM_INC:
+        this.data[this.sp]++;
+        break;
+      case VM_DEC:
+        this.data[this.sp]--;
+        break;
+      case VM_IN:
+        x = this.data[this.sp];
+        this.data[this.sp] = this.ports[x];
+        this.ports[x] = 0;
+        break;
+      case VM_OUT:
+        this.ports[0] = 0;
+        this.ports[this.data[this.sp]] = this.data[this.sp-1];
+        this.sp = this.sp - 2;
+        break;
+      case VM_WAIT:
+        this.io();
+        break;
+      default:
+        this.ip = IMAGE_SIZE;
+    }
   }
 
 
@@ -283,9 +305,31 @@ function uki()
 
     return this.tob;
   }
+
+  this.getHeapPointer = function()
+  {
+    return image[3];
+  }
+
+  this.getDictPointer = function()
+  {
+    return image[2];
+  }
+
+  this.getStrTablePointer = function()
+  {
+    return image[4];
+  }
 }
 
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ uki_start()
+
+ Call this before using any Uki objects. It handles initializing the
+ image for the first time.
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function uki_start()
 {
   loadImage();

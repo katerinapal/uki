@@ -3,6 +3,7 @@
   <title>Uki Testbed</title>
   <script src="retroImage.js"></script>
   <script src="uki.js"></script>
+  <script src="tests.js"></script>
   <style>
   .wait
   {
@@ -12,13 +13,16 @@
   </style>
 </head>
 <body onload="uki_start()">
+<p><div class="wait" id="wait"><img src="images/wait.gif"></div>Uki is a framework allowing interactions between Retro and JavaScript.</p>
+
 <form>
-  <input type="button" name="bEvaluate" value="Evaluate" onClick="words()"/><br>
+  <input type="button" name="b1" value="List all words" onClick="words()"/><br>
+  <input type="button" name="b2" value=": foo 10 for 1 . next ;" onClick="def_foo()"/><br>
+  <input type="button" name="b3" value="foo" onClick="run_foo()"/><br>
+  <input type="button" name="b4" value="HTML output" onClick="do_html()"/><br>
 </form>
 <hr>
-<div class="wait" id="wait"><img src="images/wait.gif"></div>
-<hr>
-<div id="tulari">Hi!</div>
+<div id="tulari">Output will be displayed here</div>
 <hr>
 </body>
 </html>

@@ -286,33 +286,10 @@ function uki()
 }
 
 
-
-/*
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- The code below is part of the test stuff.
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-var startLast = 0;
-var startHeap = 0;
-var startStr  = 0;
-
-
 function uki_start()
 {
   loadImage();
   var uki_core = new uki();
-  document.getElementById('tulari').innerHTML = uki_core.eval('');
+  uki_core.eval('');
 }
 
-function words()
-{
-  var mine = new uki();
-  var yours = new uki();
-
-  alert(mine.eval('1 2 + .'));
-  document.getElementById('tulari').innerHTML = mine.eval('words');
-
-  alert(yours.eval('2 9 * .'));
-  document.getElementById('tulari').innerHTML = yours.eval('" Hello, World!" cr type cr');
-}

@@ -31,3 +31,20 @@ function do_html()
   document.getElementById('tulari').innerHTML = html.eval('html');
   html.eval('last @ @ last !');
 }
+
+
+function displayStats()
+{
+  var info = new uki();
+  var stats;
+  stats  = '<b>Heap: </b>' + info.getHeapPointer() + '<br>';
+  stats += '<b>Dict: </b>' + info.getDictPointer() + '<br>';
+  stats += '<b>Strings: </b>' + info.getStrTablePointer() + '<br>';
+  document.getElementById('tulari').innerHTML = stats;
+}
+
+function restart()
+{
+  var a = new uki();
+  uki.restart();
+}

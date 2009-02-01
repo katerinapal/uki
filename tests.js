@@ -43,8 +43,9 @@ function displayStats()
   document.getElementById('tulari').innerHTML = stats;
 }
 
-function restart()
+function stack()
 {
-  var a = new uki();
-  uki.restart();
+  var stack = new uki();
+  stack.eval('1 2 + 3 *');
+  document.getElementById('tulari').innerHTML = stack.tos;
 }

@@ -49,6 +49,8 @@
     address                   Return stack (array)
     ports                     I/O ports (array)
     run                       Internal flag
+    tos                       Top data stack item
+    nos                       Second data stack item
 
  Functions:
     eval(string)              Evaluate a string
@@ -276,6 +278,9 @@ function uki()
       default:
         this.ip = IMAGE_SIZE;
     }
+
+    this.tos = this.data[this.sp];
+    this.nos = this.data[this.sp-1];
   }
 
 
@@ -329,11 +334,10 @@ function uki()
 
  Call this before using any Uki objects. It handles initializing the
  image for the first time.
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 function uki_start()
 {
   loadImage();
   var uki_core = new uki();
   uki_core.eval('');
 }
-

@@ -15,7 +15,7 @@ function words()
 function def_foo()
 {
   var foo = new uki();
-  foo.eval(': foo 1000 for 1 . next ;');
+  foo.eval(': foo 10000 for 1 . next ;');
 }
 
 function run_foo()

@@ -1,6 +1,6 @@
-var image = new Array(5000000);
-function loadImage()
-{
+export var image = new Array(5000000);
+
+export function loadImage() {
   var a; for (a = 0; a < 5000000; a++) image[a]=0;
 image[0]=8;
 image[1]=1636;

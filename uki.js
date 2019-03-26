@@ -1,3 +1,6 @@
+import { image } from ".\\retroImage.js";
+import { loadImage } from ".\\retroImage.js";
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Uki by Charles Childers
 
@@ -11,28 +14,46 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Global Limits
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-  const IMAGE_SIZE  = 5000000
-  const STACK_DEPTH =     100
-  const CYCLES_PER  =     100
+export const IMAGE_SIZE  = 5000000;
 
-
+export const STACK_DEPTH =     100;
+export const CYCLES_PER  =     100;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Opcodes for the VM
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-  const VM_NOP = 0;       const VM_LIT = 1;         const VM_DUP = 2;
-  const VM_DROP = 3;      const VM_SWAP = 4;        const VM_PUSH = 5;
-  const VM_POP = 6;       const VM_CALL = 7;        const VM_JUMP = 8;
-  const VM_RETURN = 9;    const VM_GT_JUMP = 10;    const VM_LT_JUMP = 11;
-  const VM_NE_JUMP = 12;  const VM_EQ_JUMP = 13;    const VM_FETCH = 14;
-  const VM_STORE = 15;    const VM_ADD = 16;        const VM_SUB = 17;
-  const VM_MUL = 18;      const VM_DIVMOD = 19;     const VM_AND = 20;
-  const VM_OR = 21;       const VM_XOR = 22;        const VM_SHL = 23;
-  const VM_SHR = 24;      const VM_ZERO_EXIT = 25;  const VM_INC = 26;
-  const VM_DEC = 27;      const VM_IN = 28;         const VM_OUT = 29;
-  const VM_WAIT = 30;
+export const VM_NOP = 0;
 
-
+export const VM_LIT = 1;
+export const VM_DUP = 2;
+export const VM_DROP = 3;
+export const VM_SWAP = 4;
+export const VM_PUSH = 5;
+export const VM_POP = 6;
+export const VM_CALL = 7;
+export const VM_JUMP = 8;
+export const VM_RETURN = 9;
+export const VM_GT_JUMP = 10;
+export const VM_LT_JUMP = 11;
+export const VM_NE_JUMP = 12;
+export const VM_EQ_JUMP = 13;
+export const VM_FETCH = 14;
+export const VM_STORE = 15;
+export const VM_ADD = 16;
+export const VM_SUB = 17;
+export const VM_MUL = 18;
+export const VM_DIVMOD = 19;
+export const VM_AND = 20;
+export const VM_OR = 21;
+export const VM_XOR = 22;
+export const VM_SHL = 23;
+export const VM_SHR = 24;
+export const VM_ZERO_EXIT = 25;
+export const VM_INC = 26;
+export const VM_DEC = 27;
+export const VM_IN = 28;
+export const VM_OUT = 29;
+export const VM_WAIT = 30;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  The core Uki object
@@ -60,8 +81,7 @@
     getDictPointer()          Get the dictionary pointer
     getStrTablePointer()      Get the pointer to the string table
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-function uki()
-{
+export function uki() {
   this.ip  = 0;
   this.sp  = 0;
   this.rsp = 0;
@@ -327,16 +347,13 @@ function uki()
   }
 }
 
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  uki_start()
 
  Call this before using any Uki objects. It handles initializing the
  image for the first time.
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-function uki_start()
-{
+export function uki_start() {
   loadImage();
   var uki_core = new uki();
   uki_core.eval('');

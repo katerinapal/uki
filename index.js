@@ -1,4 +1,11 @@
-var attributes = document.getElementsByTagName('body');
+import { stack } from ".\\tests.js";
+import { displayStats } from ".\\tests.js";
+import { do_html } from ".\\tests.js";
+import { run_foo } from ".\\tests.js";
+import { def_foo } from ".\\tests.js";
+import { words } from ".\\tests.js";
+import { uki_start } from ".\\uki.js";
+export var attributes = document.getElementsByTagName('body');
 for(var i = 0; i < attributes.length; i++) {
 attributes[i].onload = function() {
 	uki_start();
